@@ -1,1 +1,0 @@
-# FDM_3D_Printing_Slice_Algorithm
