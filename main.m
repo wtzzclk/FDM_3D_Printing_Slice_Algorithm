@@ -10,7 +10,7 @@ clc; clearvars; close all;
 % read_binary_or_ascii_stl函数可以读取ASCII或者二进制的STL模型文件，
 % 并返回包含两个字段的结构矩阵fv,该函数由MATLAB团队编写
 % fv包含第一个字段面法矢量faces和第二个字段顶点坐标vertices坐标值
-fv = read_binary_or_ascii_stl('Test_Models\femur_half_bone_like.stl');
+fv = read_binary_or_ascii_stl('Test_Models\femur_O.stl');
 % 这个模型通过PATCH图像函数进行润色，添加了一些动态光源
 % 并且调整了材料属性以改变模型的光泽
 figure('Name','STL原始模型与切片','NumberTitle','off');
@@ -48,7 +48,7 @@ end
 % 可以表述为 (x1, y1, z1),(x2, y2, z2),(x3, y3, z3),(n1, n2, n3)
 % 返回值numTriangles表示三角面片的总个数
 [numTriangles,triangles] = read_binary_stl_file...
-    ('Test_Models\femur_half_bone_like.stl');
+    ('Test_Models\femur_O.stl');
 
 %% 创建模型的切片轮廓曲线 slice_stl_create_path
 %设置切片厚度 slice_height
@@ -58,6 +58,7 @@ tic;
 % 函数返回值 Crossing_Point_of_All_Slices元胞矩阵，包含所有切平面与三角面片的交点的坐标值
 % 函数返回值 z_slices 表示所有切平面的Z轴坐标值，切平面坐标的两个极端值，最高最低位置均穿过三角面片的顶点
 % 函数返回值 triangles_new 是一个14列矩阵，后两列包含三角面片的最低顶点(第13列)和最高顶点(第14列)
+
 [Crossing_Point_of_All_Slices,z_slices,model_height,triangles_new] = ...
     slice_stl_create_path(triangles, slice_height);
 %读取tic计时器的数据，并显示，用于评估程序计算的效率
@@ -104,10 +105,10 @@ title(['绘制第',num2str(Number_of_Slice),'层截面轮廓'])
 %% G代码的输出
 Extrude_Speed = 0.01485; %挤出机挤出速度 单位mm/s
 Move_Speed_G1 = 1800; %挤出机XY方向移动速度 单位mm/s
-% slice_height = 0.4; %切片高度已经在上方定义过
+slice_height = 0.2; %切片高度已经在上方定义过
 Move_Speed_G0 = 3600; %挤出机快速定位移动速度 单位mm/s
 % 设定初始层高0.3,之后的层高均是0.4
-z_slices(1)=0.3;
+z_slices(1)=0.1;
 % G代码生成函数
 generate_gcode(Crossing_Point_of_All_Slices,z_slices,...
     Extrude_Speed,Move_Speed_G0,Move_Speed_G1,slice_height);
